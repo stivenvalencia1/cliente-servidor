@@ -8,19 +8,24 @@ import json
 0: Archivo recibido
 1: Ya existe el archivo
 '''
+def leer_json(file_name):
+    with open(file_name) as f:
+        data = json.load(f)
+    return data
+
+def escribir_json(data, file_name):
+    with open("server_data.json", "w") as newf:
+        json.dump(data, newf, indent=3)
 
 def iniciar_server():
     if os.path.exists("server_data.json"):
-        with open("server_data.json") as f:
-            data = json.load(f)
-            print("data loaded")
+        data = leer_json("server_data.json")
         return data
     else:
         data = {}
-        with open("server_data.json", "w") as newf:
-            json.dump(data, newf, indent=3)
-            print("data loaded")
+        escribir_json(data, "server_data.json")
         return data
+
 
 
 
@@ -32,4 +37,4 @@ while True:
     #  Wait for next request from client
     #se lee el archivo que contiene los hash de documentos almacenados en server
     data_server = iniciar_server()
-    
+    info_file = socket.recv_multipart()
