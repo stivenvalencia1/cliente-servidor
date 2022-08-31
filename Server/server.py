@@ -20,10 +20,12 @@ def escribir_json(data, file_name):
 def iniciar_server():
     if os.path.exists("server_data.json"):
         data = leer_json("server_data.json")
+        print("Data Loaded")
         return data
     else:
         data = {}
         escribir_json(data, "server_data.json")
+        print("Data Loaded")
         return data
 
 
@@ -38,3 +40,5 @@ while True:
     #se lee el archivo que contiene los hash de documentos almacenados en server
     data_server = iniciar_server()
     info_file = socket.recv_multipart()
+    print("recibieno alguna info")
+    socket.send_string("recibiendo")
