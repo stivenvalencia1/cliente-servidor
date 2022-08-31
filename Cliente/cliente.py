@@ -3,8 +3,9 @@ import os
 import hashlib
 
 '''
-0: Archivo recibido
-1: Ya existe el archivo
+0: Voy a enviar un primer mensaje
+1: El archivo que envie ya existe
+2: estoy enviando un archivo
 '''
 def identificar_cliente() -> str:
     name_client=input("Identificate, Nombre: ")
@@ -51,15 +52,23 @@ if info_file:
     print(info_file, info_file_code)
 
     with open(info_file[1], "rb") as f:
-        contenido = f.read(1024)
+        contenido = f.read(4096)
         info_file_code.append(contenido)
+        info_file_code.append("0".encode())
         while contenido:
             socket.send_multipart(info_file_code)
-            contenido = f.read(1024)
-            info_file_code[4] = contenido
-            mensaje = socket.recv()
-            print(f"Mensaje del servidor: {mensaje.decode()}")
-
+            mensaje = socket.recv().decode()
+            if mensaje == "1":
+                print("Ya existe un archivo con el contenido enviado")
+                break
+            elif mensaje == "2":
+                print("El archivo se está enviando...")
+                contenido = f.read(4096)
+                info_file_code[4] = contenido
+                info_file_code[5] = "2".encode()
+            elif mensaje == "3":
+                print("Se ha enviado todo el contenido ")
+                break
 
 
     """socket.send_multipart()
